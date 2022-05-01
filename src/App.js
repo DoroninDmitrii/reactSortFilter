@@ -2,8 +2,9 @@ import "./styles/App.css"
 import PostList from "./components/PostList";
 import { useMemo, useState } from "react";
 import PostForm from "./components/PostForm";
-import Myselect from "./components/UI/select/Myselect";
-import Myinput from "./components/UI/input/Myinput";
+import PostFilter from "./components/PostFilter";
+import MyModal from "./components/UI/MyModal/MyModal";
+import Mybutton from "./components/UI/button/Mybutton";
 
 function App() {
 
@@ -16,11 +17,13 @@ function App() {
   const [posts, setPosts] = useState(initialState);
 
   const [selectedSort, setSelectedSort] = useState('');
-
   const [searchQuery, setSearchQuery] = useState('');
+
+  const [modal, setModal] = useState(false);
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
+    setModal(false)
   }
 
   const deletePost = (post) => {
@@ -43,18 +46,14 @@ function App() {
     return sortedPosts.filter(item => item.title.toLowerCase().includes(searchQuery))
   }, [searchQuery, sortedPosts])
 
-
   return (
     <div className="App">
-      <PostForm create={createPost} />
+      <Mybutton onClick={() => setModal(true)}>Create post</Mybutton>
+      <MyModal visible={modal} setVisible={setModal}>
+        <PostForm create={createPost} />
+      </MyModal>
       <hr style={{ margin: "15px" }} />
-      <div>
-        <Myinput value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Find..." />
-        <Myselect value={selectedSort} onChange={sortPosts} defaultValue="Sort" options={[
-          { value: "title", name: "Name" },
-          { value: "body", name: "Description" }
-        ]} />
-      </div>
+      <PostFilter setSearchQuery={setSearchQuery} sortPosts={sortPosts} searchQuery={searchQuery} selectedSort={selectedSort} />
       {sortedAndSearchPosts.length !== 0 ? <PostList removePost={deletePost} posts={sortedAndSearchPosts} /> : <h1 style={{ textAlign: "center" }}>There are not posts!</h1>}
     </div>
   );
