@@ -1,10 +1,3 @@
-import "./styles/App.css"
-import PostList from "./components/PostList";
-import { useMemo, useState } from "react";
-import PostForm from "./components/PostForm";
-import Myselect from "./components/UI/select/Myselect";
-import Myinput from "./components/UI/input/Myinput";
-
 function App() {
 
   const initialState = [
@@ -31,7 +24,17 @@ function App() {
     setSelectedSort(sort)
   }
 
+  // first variant
+  // function getSortedPosts() {
+  //   if (selectedSort) {
+  //     return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
+  //   } else {
+  //     return posts;
+  //   }
+  // }
+
   const sortedPosts = useMemo(() => {
+    // console.log('hey');
     if (selectedSort) {
       return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
     } else {
@@ -39,10 +42,11 @@ function App() {
     }
   }, [selectedSort, posts])
 
-  const sortedAndSearchPosts = useMemo(() => {
-    return sortedPosts.filter(item => item.title.toLowerCase().includes(searchQuery))
-  }, [searchQuery, sortedPosts])
-
+  // first variant
+  // const sortPosts = (sort) => {
+  //   setSelectedSort(sort)
+  //     setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])))
+  // }
 
   return (
     <div className="App">
@@ -55,7 +59,7 @@ function App() {
           { value: "body", name: "Description" }
         ]} />
       </div>
-      {sortedAndSearchPosts.length !== 0 ? <PostList removePost={deletePost} posts={sortedAndSearchPosts} /> : <h1 style={{ textAlign: "center" }}>There are not posts!</h1>}
+      {posts.length !== 0 ? <PostList removePost={deletePost} posts={sortedPosts} /> : <h1 style={{ textAlign: "center" }}>There are not posts!</h1>}
     </div>
   );
 }
